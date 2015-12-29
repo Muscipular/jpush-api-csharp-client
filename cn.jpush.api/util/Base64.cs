@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace cn.jpush.api.util
 {
-    class Base64
+    internal class Base64
     {
-        public static String getBase64Encode(String str)
+        public static string getBase64Encode(string str)
         {
-            byte[] bytes = Encoding.Default.GetBytes(str);
+            var bytes = Encoding.Default.GetBytes(str);
             //
             return Convert.ToBase64String(bytes);
         }

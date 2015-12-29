@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using cn.jpush.api.push.mode;
 using Newtonsoft.Json.Linq;
@@ -18,7 +19,7 @@ namespace cn.jpush.api.test.remote
             json.Add("key2", true);
         
             String alert = json.ToString();
-            Console.WriteLine(alert);
+            Debug.WriteLine(alert);
             
             PushPayload payload = new PushPayload();
             payload.platform = Platform.all();

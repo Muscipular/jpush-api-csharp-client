@@ -1,35 +1,32 @@
-﻿using cn.jpush.api.common;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using cn.jpush.api.common;
+using Newtonsoft.Json;
 
 namespace cn.jpush.api.device
 {
-  public  class TagAliasResult:BaseResult
+    public class TagAliasResult : BaseResult
     {
-        public List<String> tags;
-        public String alias;
+        public string alias;
+
+        public List<string> tags;
 
         public TagAliasResult()
         {
             tags = null;
             alias = null;
         }
+
         public override bool isResultOK()
         {
-            if (Equals(ResponseResult.responseCode, HttpStatusCode.OK))
-            {
-                return true;
-            }
-            return false;
+            return ResponseResult.responseCode == HttpStatusCode.OK;
         }
+
         public static TagAliasResult fromResponse(ResponseWrapper responseWrapper)
         {
-            TagAliasResult tagAliasResult = new TagAliasResult();
+            var tagAliasResult = new TagAliasResult();
             if (responseWrapper.isServerResponse())
             {
                 tagAliasResult = JsonConvert.DeserializeObject<TagAliasResult>(responseWrapper.responseContent);
@@ -37,6 +34,5 @@ namespace cn.jpush.api.device
             tagAliasResult.ResponseResult = responseWrapper;
             return tagAliasResult;
         }
-
     }
 }

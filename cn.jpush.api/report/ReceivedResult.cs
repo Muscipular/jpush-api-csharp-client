@@ -1,37 +1,18 @@
-﻿using cn.jpush.api.common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using cn.jpush.api.common;
 
 namespace cn.jpush.api.report
 {
     public class ReceivedResult : BaseResult
     {
-
-        private List<Received> receivedList = new List<Received>();
-
-        public List<Received> ReceivedList
-        {
-            get { return receivedList; }
-            set { receivedList = value; }
-        }
-	
-	    public class Received {
-	        public long msg_id;
-	        public String android_received;
-	        public String ios_apns_sent;
-	    }
+        public List<Received> ReceivedList { get; set; } = new List<Received>();
 
         public override bool isResultOK()
         {
-            if (Equals(ResponseResult.responseCode, HttpStatusCode.OK))
-            {
-                return true;
-            }
-            return false;
+            return ResponseResult.responseCode == HttpStatusCode.OK;
         }
 
         public HttpStatusCode getErrorCode()
@@ -43,13 +24,22 @@ namespace cn.jpush.api.report
             return 0;
         }
 
-        public  string getErrorMessage()
+        public string getErrorMessage()
         {
             if (null != ResponseResult)
             {
                 return ResponseResult.exceptionString;
             }
             return "";
+        }
+
+        public class Received
+        {
+            public string android_received;
+
+            public string ios_apns_sent;
+
+            public long msg_id;
         }
     }
 }

@@ -1,32 +1,29 @@
-﻿using cn.jpush.api.common;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using cn.jpush.api.common;
+using Newtonsoft.Json;
 
 namespace cn.jpush.api.device
 {
-   public class TagListResult:BaseResult
+    public class TagListResult : BaseResult
     {
-        public List<String> tags ;
+        public List<string> tags;
+
         public TagListResult()
         {
             tags = null;
         }
+
         public override bool isResultOK()
         {
-            if (Equals(ResponseResult.responseCode, HttpStatusCode.OK))
-            {
-                return true;
-            }
-            return false;
+            return ResponseResult.responseCode == HttpStatusCode.OK;
         }
+
         public static TagListResult fromResponse(ResponseWrapper responseWrapper)
         {
-            TagListResult tagListResult = new TagListResult();
+            var tagListResult = new TagListResult();
             if (responseWrapper.isServerResponse())
             {
                 tagListResult = JsonConvert.DeserializeObject<TagListResult>(responseWrapper.responseContent);

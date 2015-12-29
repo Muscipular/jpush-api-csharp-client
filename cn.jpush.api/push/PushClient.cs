@@ -1,64 +1,69 @@
-﻿using cn.jpush.api.common;
-using cn.jpush.api.push.mode;
-using cn.jpush.api.util;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using cn.jpush.api.common;
+using cn.jpush.api.push.mode;
+using cn.jpush.api.util;
+using Newtonsoft.Json;
 
 namespace cn.jpush.api.push
 {
-    internal class PushClient:BaseHttpClient
+    internal class PushClient : BaseHttpClient
     {
-        private const String HOST_NAME_SSL = "https://api.jpush.cn";
-        private const String PUSH_PATH = "/v3/push";
+        private const string HOST_NAME_SSL = "https://api.jpush.cn";
 
-        private String appKey;
-        private String masterSecret;
-        public PushClient(String appKey,String masterSecret)
+        private const string PUSH_PATH = "/v3/push";
+
+        private readonly string appKey;
+
+        private readonly string masterSecret;
+
+        public PushClient(string appKey, string masterSecret)
         {
             this.appKey = appKey;
             this.masterSecret = masterSecret;
         }
-        public MessageResult sendPush(PushPayload payload) 
+
+        public MessageResult sendPush(PushPayload payload)
         {
             Preconditions.checkArgument(payload != null, "pushPayload should not be empty");
             payload.Check();
-            String payloadJson = payload.ToJson();
+            var payloadJson = payload.ToJson();
             return sendPush(payloadJson);
         }
+
         public MessageResult sendPush(string payloadString)
         {
             Preconditions.checkArgument(!string.IsNullOrEmpty(payloadString), "payloadString should not be empty");
-           
-            String url = HOST_NAME_SSL;
+
+            var url = HOST_NAME_SSL;
             url += PUSH_PATH;
-            ResponseWrapper result = sendPost(url, Authorization(), payloadString);
-            MessageResult messResult = new MessageResult();
+            var result = sendPost(url, Authorization(), payloadString);
+            var messResult = new MessageResult();
             messResult.ResponseResult = result;
-           
-            JpushSuccess jpushSuccess = JsonConvert.DeserializeObject<JpushSuccess>(result.responseContent);
+
+            var jpushSuccess = JsonConvert.DeserializeObject<JpushSuccess>(result.responseContent);
             messResult.sendno = long.Parse(jpushSuccess.sendno);
             messResult.msg_id = long.Parse(jpushSuccess.msg_id);
-           
+
             return messResult;
         }
-        private String Authorization(){
 
-            Debug.Assert(!string.IsNullOrEmpty(this.appKey));
-            Debug.Assert(!string.IsNullOrEmpty(this.masterSecret));
+        private string Authorization()
+        {
+            Debug.Assert(!string.IsNullOrEmpty(appKey));
+            Debug.Assert(!string.IsNullOrEmpty(masterSecret));
 
-            String origin=this.appKey+":"+this.masterSecret;
-            return  Base64.getBase64Encode(origin);
+            var origin = appKey + ":" + masterSecret;
+            return Base64.getBase64Encode(origin);
         }
     }
-    enum MsgTypeEnum
+
+    internal enum MsgTypeEnum
     {
         NOTIFICATIFY = 1,
-        COUSTOM_MESSAGE =2
+
+        COUSTOM_MESSAGE = 2
     }
 }

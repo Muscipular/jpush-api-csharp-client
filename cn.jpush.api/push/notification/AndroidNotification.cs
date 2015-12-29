@@ -1,44 +1,48 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace cn.jpush.api.push.notification
 {
-   public class AndroidNotification:PlatformNotification
+    public class AndroidNotification : PlatformNotification
     {
-        public const String NOTIFICATION_ANDROID = "android";
-    
-        private const String TITLE = "title";
-        private const String BUILDER_ID = "builder_id";
+        public const string NOTIFICATION_ANDROID = "android";
+
+        private const string TITLE = "title";
+
+        private const string BUILDER_ID = "builder_id";
+
+        public AndroidNotification()
+        {
+            title = null;
+            builder_id = 0;
+        }
 
         [JsonProperty]
-        public String title{get;private set;}
+        public string title { get; private set; }
+
         [JsonProperty]
         public int builder_id { get; private set; }
-        public AndroidNotification():base()
-        {
-            this.title = null;
-            this.builder_id = 0;
-        }
+
         public AndroidNotification setTitle(string title)
         {
             this.title = title;
             return this;
         }
+
         public AndroidNotification setBuilderID(int builder_id)
         {
             this.builder_id = builder_id;
             return this;
         }
-        public AndroidNotification setAlert(String alert)
+
+        public AndroidNotification setAlert(string alert)
         {
             this.alert = alert;
             return this;
         }
+
         public AndroidNotification AddExtra(string key, string value)
         {
             if (extras == null)
@@ -51,6 +55,7 @@ namespace cn.jpush.api.push.notification
             }
             return this;
         }
+
         public AndroidNotification AddExtra(string key, int value)
         {
             if (extras == null)
@@ -60,6 +65,7 @@ namespace cn.jpush.api.push.notification
             extras.Add(key, value);
             return this;
         }
+
         public AndroidNotification AddExtra(string key, bool value)
         {
             if (extras == null)
@@ -68,9 +74,6 @@ namespace cn.jpush.api.push.notification
             }
             extras.Add(key, value);
             return this;
-
         }
-       
-        
     }
 }

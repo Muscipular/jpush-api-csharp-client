@@ -1,56 +1,62 @@
-﻿using cn.jpush.api.util;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using cn.jpush.api.util;
+using Newtonsoft.Json;
 
 namespace cn.jpush.api.push.mode
 {
     public class Message
     {
-        public String title{get;set;}
-        public String msg_content { get; set; }
-        public String content_type { get; set; }
-        [JsonProperty]
-        private Dictionary<string, object> extras { get; set; } 
-       
         private Message()
         {
-
         }
-        private Message(String msgContent)
+
+        private Message(string msgContent)
         {
-            Preconditions.checkArgument(!(msgContent==null), "msgContent should be set");
+            Preconditions.checkArgument(!(msgContent == null), "msgContent should be set");
 
-            this.title = null;
-            this.msg_content = msgContent;
-            this.content_type = null;
-            this.extras = null;
+            title = null;
+            msg_content = msgContent;
+            content_type = null;
+            extras = null;
         }
-        private Message(String msgContent, String title, String contentType)
+
+        private Message(string msgContent, string title, string contentType)
         {
             Preconditions.checkArgument(!(msgContent == null), "msgContent should be set");
 
             this.title = title;
-            this.msg_content = msgContent;
-            this.content_type = contentType;
+            msg_content = msgContent;
+            content_type = contentType;
         }
+
+        public string title { get; set; }
+
+        public string msg_content { get; set; }
+
+        public string content_type { get; set; }
+
+        [JsonProperty]
+        private Dictionary<string, object> extras { get; set; }
+
         public static Message content(string msgContent)
         {
             return new Message(msgContent).Check();
         }
-        public Message setTitle(String title)
+
+        public Message setTitle(string title)
         {
             this.title = title;
             return this;
         }
-        public Message setContentType(String ContentType)
+
+        public Message setContentType(string ContentType)
         {
-            this.content_type = ContentType;
+            content_type = ContentType;
             return this;
         }
+
         public Message AddExtras(string key, string value)
         {
             if (extras == null)
@@ -63,6 +69,7 @@ namespace cn.jpush.api.push.mode
             }
             return this;
         }
+
         public Message AddExtras(string key, int value)
         {
             if (extras == null)
@@ -72,6 +79,7 @@ namespace cn.jpush.api.push.mode
             extras.Add(key, value);
             return this;
         }
+
         public Message AddExtras(string key, bool value)
         {
             if (extras == null)
@@ -80,11 +88,11 @@ namespace cn.jpush.api.push.mode
             }
             extras.Add(key, value);
             return this;
-
         }
+
         public Message Check()
         {
-            Preconditions.checkArgument(!(msg_content==null), "msgContent should be set");
+            Preconditions.checkArgument(!(msg_content == null), "msgContent should be set");
             return this;
         }
     }

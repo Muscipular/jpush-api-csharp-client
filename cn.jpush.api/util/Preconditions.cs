@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace cn.jpush.api.util
 {
-    class Preconditions
+    internal class Preconditions
     {
         public static void checkArgument(bool expression)
         {
@@ -15,6 +13,7 @@ namespace cn.jpush.api.util
                 throw new ArgumentNullException();
             }
         }
+
         public static void checkArgument(bool expression, object errorMessage)
         {
             if (!expression)

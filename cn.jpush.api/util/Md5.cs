@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace cn.jpush.api.util
 {
-    class Md5
+    internal class Md5
     {
-        public static String getMD5Hash(String str)
+        public static string getMD5Hash(string str)
         {
             // MD5 md5 = new MD5CryptoServiceProvider();
             //byte[] res = md5.ComputeHash(Encoding.Default.GetBytes(str), 0, str.Length);
@@ -21,34 +20,28 @@ namespace cn.jpush.api.util
             // 创建MD5类的默认实例：MD5CryptoServiceProvider
 
 
-            MD5 md5 = MD5.Create();
+            var md5 = MD5.Create();
 
 
-            byte[] bs = Encoding.UTF8.GetBytes(str);
+            var bs = Encoding.UTF8.GetBytes(str);
 
 
-            byte[] hs = md5.ComputeHash(bs);
+            var hs = md5.ComputeHash(bs);
 
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
 
-            foreach (byte b in hs)
+            foreach (var b in hs)
             {
-
-
                 // 以十六进制格式格式化
 
 
                 sb.Append(b.ToString("x2"));
-
-
             }
 
 
             return sb.ToString();
-
-
         }
     }
 }

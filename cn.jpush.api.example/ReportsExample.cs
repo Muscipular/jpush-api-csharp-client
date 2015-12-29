@@ -2,6 +2,7 @@
 using cn.jpush.api.common.resp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,19 +20,19 @@ namespace cn.jpush.api.example
              try
              {
                  var result = jpushClient.getReceivedApi("1942377665");
-                 Console.WriteLine("Got result - " + result.ToString());
+                 Debug.WriteLine("Got result - " + result.ToString());
 
              }
              catch (APIRequestException e)
              {
-                 Console.WriteLine("Error response from JPush server. Should review and fix it. ");
-                 Console.WriteLine("HTTP Status: " + e.Status);
-                 Console.WriteLine("Error Code: " + e.ErrorCode);
-                 Console.WriteLine("Error Message: " + e.ErrorCode);
+                 Debug.WriteLine("Error response from JPush server. Should review and fix it. ");
+                 Debug.WriteLine("HTTP Status: " + e.Status);
+                 Debug.WriteLine("Error Code: " + e.ErrorCode);
+                 Debug.WriteLine("Error Message: " + e.ErrorCode);
              }
              catch (APIConnectionException e)
              {
-                 Console.WriteLine(e.Message);
+                 Debug.WriteLine(e.Message);
              }
          }
          /*用户统计vip专用接口*/
@@ -41,19 +42,19 @@ namespace cn.jpush.api.example
              try
              {
                  var result = jpushClient.getReportUsers(TimeUnit.DAY, "2014-06-10", 3);
-                 Console.WriteLine("Got result - " + result.ToString());
+                 Debug.WriteLine("Got result - " + result.ToString());
 
              }
              catch (APIRequestException e)
              {
-                 Console.WriteLine("Error response from JPush server. Should review and fix it. ");
-                 Console.WriteLine("HTTP Status: " + e.Status);
-                 Console.WriteLine("Error Code: " + e.ErrorCode);
-                 Console.WriteLine("Error Message: " + e.ErrorCode);
+                 Debug.WriteLine("Error response from JPush server. Should review and fix it. ");
+                 Debug.WriteLine("HTTP Status: " + e.Status);
+                 Debug.WriteLine("Error Code: " + e.ErrorCode);
+                 Debug.WriteLine("Error Message: " + e.ErrorCode);
              }
              catch (APIConnectionException e)
              {
-                 Console.WriteLine(e.Message);
+                 Debug.WriteLine(e.Message);
              }
          }
          /*消息统计vip专用接口*/
@@ -63,19 +64,19 @@ namespace cn.jpush.api.example
              try
              {
                  var result = jpushClient.getReportMessages("269978303");
-                 Console.WriteLine("Got result - " + result.ToString());
+                 Debug.WriteLine("Got result - " + result.ToString());
 
              }
              catch (APIRequestException e)
              {
-                 Console.WriteLine("Error response from JPush server. Should review and fix it. ");
-                 Console.WriteLine("HTTP Status: " + e.Status);
-                 Console.WriteLine("Error Code: " + e.ErrorCode);
-                 Console.WriteLine("Error Message: " + e.ErrorCode);
+                 Debug.WriteLine("Error response from JPush server. Should review and fix it. ");
+                 Debug.WriteLine("HTTP Status: " + e.Status);
+                 Debug.WriteLine("Error Code: " + e.ErrorCode);
+                 Debug.WriteLine("Error Message: " + e.ErrorCode);
              }
              catch (APIConnectionException e)
              {
-                 Console.WriteLine(e.Message);
+                 Debug.WriteLine(e.Message);
              }
 
          }

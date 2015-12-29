@@ -1,73 +1,81 @@
-﻿using cn.jpush.api.common;
-using cn.jpush.api.common.resp;
-using cn.jpush.api.util;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using cn.jpush.api.common;
+using cn.jpush.api.common.resp;
+using cn.jpush.api.util;
+using Newtonsoft.Json.Linq;
 
 namespace cn.jpush.api.device
 {
-     class DeviceClient : BaseHttpClient
+    internal class DeviceClient : BaseHttpClient
     {
-        public   const String HOST_NAME_SSL = "https://device.jpush.cn";
-        public   const String DEVICES_PATH = "/v3/devices";
-        public   const String TAGS_PATH = "/v3/tags";
-        public   const String ALIASES_PATH = "/v3/aliases";
+        public const string HOST_NAME_SSL = "https://device.jpush.cn";
 
-        private String appKey;
-        private String masterSecret;
-        public DeviceClient(String appKey, String masterSecret) 
+        public const string DEVICES_PATH = "/v3/devices";
+
+        public const string TAGS_PATH = "/v3/tags";
+
+        public const string ALIASES_PATH = "/v3/aliases";
+
+        private readonly string appKey;
+
+        private readonly string masterSecret;
+
+        public DeviceClient(string appKey, string masterSecret)
         {
             this.appKey = appKey;
-            this.masterSecret = masterSecret;        
+            this.masterSecret = masterSecret;
         }
-        public TagAliasResult getDeviceTagAlias(String registrationId)
-        {
-            String url = HOST_NAME_SSL + DEVICES_PATH + "/" + registrationId;
-            String auth = Base64.getBase64Encode(this.appKey + ":" + this.masterSecret);
 
-            ResponseWrapper response = this.sendGet(url, auth, null);
+        public TagAliasResult getDeviceTagAlias(string registrationId)
+        {
+            var url = string.Format("{0}{1}/{2}", HOST_NAME_SSL, DEVICES_PATH, registrationId);
+            var auth = Base64.getBase64Encode(appKey + ":" + masterSecret);
+
+            var response = sendGet(url, auth, null);
 
             return TagAliasResult.fromResponse(response);
-
         }
-        public DefaultResult updateDeviceTagAlias(String registrationId, bool clearAlias, bool clearTag) 
+
+        public DefaultResult updateDeviceTagAlias(string registrationId, bool clearAlias, bool clearTag)
         {
             Preconditions.checkArgument(clearAlias || clearTag, "It is not meaningful to do nothing.");
-    	
-            String url = HOST_NAME_SSL + DEVICES_PATH + "/" + registrationId;
 
-            JObject top = new JObject();
-            if (clearAlias) {
+            var url = string.Format("{0}{1}/{2}", HOST_NAME_SSL, DEVICES_PATH, registrationId);
+
+            var top = new JObject();
+            if (clearAlias)
+            {
                 top.Add("alias", "");
             }
-            if (clearTag) {
+            if (clearTag)
+            {
                 top.Add("tags", "");
             }
-            ResponseWrapper result = sendPost(url, Authorization(), top.ToString());
+            var result = sendPost(url, Authorization(), top.ToString());
 
             return DefaultResult.fromResponse(result);
         }
-        public DefaultResult updateDeviceTagAlias(String registrationId, 
-                                                   String alias,  
-                                                   HashSet<String> tagsToAdd,
-                                                   HashSet<String> tagsToRemove) 
-         {
-            String url = HOST_NAME_SSL + DEVICES_PATH + "/" + registrationId;
 
-            JObject top = new JObject();
-            if (null != alias) {
+        public DefaultResult updateDeviceTagAlias(string registrationId,
+                                                  string alias,
+                                                  HashSet<string> tagsToAdd,
+                                                  HashSet<string> tagsToRemove)
+        {
+            var url = string.Format("{0}{1}/{2}", HOST_NAME_SSL, DEVICES_PATH, registrationId);
+
+            var top = new JObject();
+            if (null != alias)
+            {
                 top.Add("alias", alias);
             }
-            
-            JObject tagObject = new JObject();
-            if (tagsToAdd!=null)
+
+            var tagObject = new JObject();
+            if (tagsToAdd != null)
             {
-                JArray tagsAdd = JArray.FromObject(tagsToAdd);
+                var tagsAdd = JArray.FromObject(tagsToAdd);
                 if (tagsAdd.Count > 0)
                 {
                     tagObject.Add("add", tagsAdd);
@@ -75,103 +83,111 @@ namespace cn.jpush.api.device
             }
             if (tagsToRemove != null)
             {
-
-                JArray tagsRemove = JArray.FromObject(tagsToRemove);
+                var tagsRemove = JArray.FromObject(tagsToRemove);
                 if (tagsRemove.Count > 0)
                 {
                     tagObject.Add("remove", tagsRemove);
                 }
             }
-        
-            if (tagObject.Count > 0) {
+
+            if (tagObject.Count > 0)
+            {
                 top.Add("tags", tagObject);
             }
-            ResponseWrapper result = sendPost(url, Authorization(), top.ToString());
+            var result = sendPost(url, Authorization(), top.ToString());
 
             return DefaultResult.fromResponse(result);
-       }
-        public TagListResult getTagList() 
+        }
+
+        public TagListResult getTagList()
         {
-            String url = HOST_NAME_SSL + TAGS_PATH + "/";
-            String auth = Base64.getBase64Encode(this.appKey + ":" + this.masterSecret);
-            ResponseWrapper response = this.sendGet(url, auth, null);
+            var url = string.Format("{0}{1}/", HOST_NAME_SSL, TAGS_PATH);
+            var auth = Base64.getBase64Encode(appKey + ":" + masterSecret);
+            var response = sendGet(url, auth, null);
             return TagListResult.fromResponse(response);
         }
 
-         public BooleanResult isDeviceInTag(String theTag, String registrationID)
-         {
-            String url = HOST_NAME_SSL + TAGS_PATH + "/" + theTag + "/registration_ids/" + registrationID;
-            ResponseWrapper response = this.sendGet(url, Authorization(), null);
-            return BooleanResult.fromResponse(response);        
-         }
-         public DefaultResult addRemoveDevicesFromTag(String theTag, 
-                                                      HashSet<String> toAddUsers, 
-                                                      HashSet<String> toRemoveUsers) 
-         {
-            String url = HOST_NAME_SSL + TAGS_PATH + "/" + theTag;
-        
-            JObject top = new JObject();
-            JObject registrationIds = new JObject();
-            if (null != toAddUsers && toAddUsers.Count > 0) 
+        public BooleanResult isDeviceInTag(string theTag, string registrationID)
+        {
+            var url = string.Format("{0}{1}/{2}/registration_ids/{3}", HOST_NAME_SSL, TAGS_PATH, theTag, registrationID);
+            var response = sendGet(url, Authorization(), null);
+            return BooleanResult.fromResponse(response);
+        }
+
+        public DefaultResult addRemoveDevicesFromTag(string theTag,
+                                                     HashSet<string> toAddUsers,
+                                                     HashSet<string> toRemoveUsers)
+        {
+            var url = string.Format("{0}{1}/{2}", HOST_NAME_SSL, TAGS_PATH, theTag);
+
+            var top = new JObject();
+            var registrationIds = new JObject();
+            if (null != toAddUsers && toAddUsers.Count > 0)
             {
-                JArray array = new JArray();
-                foreach (String user in toAddUsers) {
+                var array = new JArray();
+                foreach (var user in toAddUsers)
+                {
                     array.Add(JToken.FromObject(user));
                 }
                 registrationIds.Add("add", array);
             }
-            if (null != toRemoveUsers && toRemoveUsers.Count > 0) 
+            if (null != toRemoveUsers && toRemoveUsers.Count > 0)
             {
-                JArray array = new JArray();
-                foreach (String user in toRemoveUsers) 
+                var array = new JArray();
+                foreach (var user in toRemoveUsers)
                 {
                     array.Add(JToken.FromObject(user));
                 }
                 registrationIds.Add("remove", array);
             }
             top.Add("registration_ids", registrationIds);
-            ResponseWrapper response = this.sendPost(url, Authorization(), top.ToString());
+            var response = sendPost(url, Authorization(), top.ToString());
             return DefaultResult.fromResponse(response);
         }
-         
-        public DefaultResult deleteTag(String theTag, String platform) 
+
+        public DefaultResult deleteTag(string theTag, string platform)
         {
-            String url = HOST_NAME_SSL + TAGS_PATH + "/" + theTag;
-            if (null != platform) {
-        	    url += "?platform=" + platform; 
+            var url = string.Format("{0}{1}/{2}", HOST_NAME_SSL, TAGS_PATH, theTag);
+            if (null != platform)
+            {
+                url += "?platform=" + platform;
             }
 
-            ResponseWrapper response = this.sendDelete(url, Authorization(), null);
-            return DefaultResult.fromResponse(response);        
+            var response = sendDelete(url, Authorization(), null);
+            return DefaultResult.fromResponse(response);
         }
-         // ------------- alias
-    
-       public AliasDeviceListResult getAliasDeviceList(String alias, String platform)
+
+        // ------------- alias
+
+        public AliasDeviceListResult getAliasDeviceList(string alias, string platform)
         {
-            String url = HOST_NAME_SSL + ALIASES_PATH + "/" + alias;
-            if (null != platform) {
-        	    url += "?platform=" + platform; 
+            var url = string.Format("{0}{1}/{2}", HOST_NAME_SSL, ALIASES_PATH, alias);
+            if (null != platform)
+            {
+                url += "?platform=" + platform;
             }
-            ResponseWrapper response = this.sendGet(url, Authorization(), null);
-        
+            var response = sendGet(url, Authorization(), null);
+
             return AliasDeviceListResult.fromResponse(response);
         }
-       public DefaultResult deleteAlias(String alias, String platform)
-         {
-            String url = HOST_NAME_SSL + ALIASES_PATH + "/" + alias;
-            if (null != platform) {
-        	    url += "?platform=" + platform; 
+
+        public DefaultResult deleteAlias(string alias, string platform)
+        {
+            var url = string.Format("{0}{1}/{2}", HOST_NAME_SSL, ALIASES_PATH, alias);
+            if (null != platform)
+            {
+                url += "?platform=" + platform;
             }
-            ResponseWrapper response = this.sendDelete(url, Authorization(), null);
+            var response = sendDelete(url, Authorization(), null);
             return DefaultResult.fromResponse(response);
         }
-       private String Authorization()
-       {
-            Debug.Assert(!string.IsNullOrEmpty(this.appKey));
-            Debug.Assert(!string.IsNullOrEmpty(this.masterSecret));
-            String origin = this.appKey + ":" + this.masterSecret;
-            return Base64.getBase64Encode(origin);
-       }
-    }
 
+        private string Authorization()
+        {
+            Debug.Assert(!string.IsNullOrEmpty(appKey));
+            Debug.Assert(!string.IsNullOrEmpty(masterSecret));
+            var origin = appKey + ":" + masterSecret;
+            return Base64.getBase64Encode(origin);
+        }
+    }
 }
